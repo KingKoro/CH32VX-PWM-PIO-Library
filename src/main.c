@@ -109,12 +109,14 @@ int main(void)
                     USB_Serial_printf( "Power: %d \n", ++power);
                     //pwmHandle_A8.set_dutycycle( power );
                     set_pwm_dutycycle(&PWM_A8, power);
+                    enable_pwm_output(&PWM_A7);                  // Enable output, demonstrate independant channels
                 }
                 else if(input == '-')
                 {
                     USB_Serial_printf( "Power: %d \n", --power);
                     //pwmHandle_A8.set_dutycycle( power );
                     set_pwm_dutycycle(&PWM_A8, power);
+                    disable_pwm_output(&PWM_A7);                  // Disable output, demonstrate independant channels
                 }
             }
         }
