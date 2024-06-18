@@ -56,18 +56,21 @@ int main(void)
     // Initialize PWM on PA8 (TIM1_CH1) with 10kHz Base frequency
     PWM_handle PWM_A8={0};
     init_pwm(&PWM_A8, PWM_TIM1, PWM_CH1, 0xA8, 10000);
-    set_pwm_dutycycle(&PWM_A8, 128);              // set  PWM duty cycle to 50% initially
-    enable_pwm_output(&PWM_A8);                 // start PWM output
+    set_pwm_dutycycle(&PWM_A8, 191);              // set  PWM duty cycle to ~75% (191/255) initially, setting dutycycle automatically starts PWM output
     // Initialize PWM on PA6 (TIM3_CH1) with 20kHz Base frequency
     PWM_handle PWM_A6={0};
     init_pwm(&PWM_A6, PWM_TIM3, PWM_CH1, 0xA6, 20000);
-    set_pwm_dutycycle(&PWM_A6, 128);              // set  PWM duty cycle to 50% initially
-    enable_pwm_output(&PWM_A6);                 // start PWM output
+    set_pwm_dutycycle(&PWM_A6, 128);              // set  PWM duty cycle to 50% (128/255) initially, setting dutycycle automatically starts PWM output
+    // Initialize PWM on PA7 (TIM3_CH2) with 20kHz Base frequency
+    PWM_handle PWM_A7={0};
+    init_pwm(&PWM_A7, PWM_TIM3, PWM_CH2, 0xA7, 20000);
+    set_pwm_dutycycle(&PWM_A7, 128);              // set  PWM duty cycle to 50% (128/255) initially, setting dutycycle automatically starts PWM output
+    disable_pwm_output(&PWM_A7);                  // Disable output, demonstrate independant channels
     // Initialize PWM on PB8 (TIM4_CH3) with 40kHz Base frequency
     PWM_handle PWM_B8={0};
     init_pwm(&PWM_B8, PWM_TIM4, PWM_CH3, 0xB8, 40000);
-    set_pwm_dutycycle(&PWM_B8, 128);              // set  PWM duty cycle to 50% initially
-    enable_pwm_output(&PWM_B8);                 // start PWM output
+    set_pwm_dutycycle(&PWM_B8, 51);              // set  PWM duty cycle to ~20% (51/255) initially, setting dutycycle automatically starts PWM output
+
 
     // ---------- Endless Loop Code ----------
     while ( 1 )

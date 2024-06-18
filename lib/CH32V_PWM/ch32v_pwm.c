@@ -93,18 +93,26 @@ int init_pwm_base(PWM_handle *object, uint8_t iTimer, uint8_t iChannel, int iPin
         case PWM_TIM1:
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
             TIM_TimeBaseInit( TIM1, &TIM_TimeBaseInitStructure);
+            TIM_SelectOutputTrigger(TIM1, TIM_TRGOSource_Update);       // Enable self-resetting TRGO-Event when no PWM configured
+            TIM_Cmd(TIM1, ENABLE);
             break;
         case PWM_TIM2:
             RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2 , ENABLE);
             TIM_TimeBaseInit( TIM2, &TIM_TimeBaseInitStructure);
+            TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);       // Enable self-resetting TRGO-Event when no PWM configured
+            TIM_Cmd(TIM2, ENABLE);
             break;
         case PWM_TIM3:
             RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3 , ENABLE);
             TIM_TimeBaseInit( TIM3, &TIM_TimeBaseInitStructure);
+            TIM_SelectOutputTrigger(TIM3, TIM_TRGOSource_Update);       // Enable self-resetting TRGO-Event when no PWM configured
+            TIM_Cmd(TIM3, ENABLE);
             break;
         case PWM_TIM4:
             RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4 , ENABLE);
             TIM_TimeBaseInit( TIM4, &TIM_TimeBaseInitStructure);
+            TIM_SelectOutputTrigger(TIM4, TIM_TRGOSource_Update);       // Enable self-resetting TRGO-Event when no PWM configured
+            TIM_Cmd(TIM4, ENABLE);
             break;
     }
     return 0;
@@ -289,19 +297,139 @@ void set_pwm_dutycycle(PWM_handle *object, uint16_t duty)
 void enable_pwm_output(PWM_handle *object)
 {
     // ---------- Enable timer ----------
+    // ---------- Re-Initialize base structure with TIM_OutputState_Enable ----------
+    TIM_OCInitTypeDef TIM_OCInitStructure={0};
+
+    if (object->pwm_mode == PWM_MODE1)
+    {
+        TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    }
+    else
+    {
+        TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
+    }
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;       // Ensure PWM-Output is turned on
+	TIM_OCInitStructure.TIM_Pulse = object->duty_cycle;
+	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    // ---------- Configure Timer and Channel ----------
+    // This extensive selection matrix, should get optimized to few statements by compiler
     switch (object->timer)
     {
         case PWM_TIM1:
-            TIM_Cmd( TIM1, ENABLE );
+            switch (object->channel)
+            {
+                case PWM_CH1:
+                    TIM_OC1Init( TIM1, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM1, ENABLE );
+                    TIM_OC1PreloadConfig( TIM1, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM1, ENABLE );
+                    break;
+                case PWM_CH2:
+                    TIM_OC2Init( TIM1, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM1, ENABLE );
+                    TIM_OC2PreloadConfig( TIM1, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM1, ENABLE );
+                    break;
+                case PWM_CH3:
+                    TIM_OC3Init( TIM1, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM1, ENABLE );
+                    TIM_OC3PreloadConfig( TIM1, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM1, ENABLE );
+                    break;
+                case PWM_CH4:
+                    TIM_OC4Init( TIM1, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM1, ENABLE );
+                    TIM_OC4PreloadConfig( TIM1, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM1, ENABLE );
+                    break;
+            }
             break;
         case PWM_TIM2:
-            TIM_Cmd( TIM2, ENABLE );
+            switch (object->channel)
+            {
+                case PWM_CH1:
+                    TIM_OC1Init( TIM2, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM2, ENABLE );
+                    TIM_OC1PreloadConfig( TIM2, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM2, ENABLE );
+                    break;
+                case PWM_CH2:
+                    TIM_OC2Init( TIM2, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM2, ENABLE );
+                    TIM_OC2PreloadConfig( TIM2, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM2, ENABLE );
+                    break;
+                case PWM_CH3:
+                    TIM_OC3Init( TIM2, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM2, ENABLE );
+                    TIM_OC3PreloadConfig( TIM2, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM2, ENABLE );
+                    break;
+                case PWM_CH4:
+                    TIM_OC4Init( TIM2, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM2, ENABLE );
+                    TIM_OC4PreloadConfig( TIM2, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM2, ENABLE );
+                    break;
+            }
             break;
         case PWM_TIM3:
-            TIM_Cmd( TIM3, ENABLE );
+            switch (object->channel)
+            {
+                case PWM_CH1:
+                    TIM_OC1Init( TIM3, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM3, ENABLE );
+                    TIM_OC1PreloadConfig( TIM3, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM3, ENABLE );
+                    break;
+                case PWM_CH2:
+                    TIM_OC2Init( TIM3, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM3, ENABLE );
+                    TIM_OC2PreloadConfig( TIM3, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM3, ENABLE );
+                    break;
+                case PWM_CH3:
+                    TIM_OC3Init( TIM3, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM3, ENABLE );
+                    TIM_OC3PreloadConfig( TIM3, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM3, ENABLE );
+                    break;
+                case PWM_CH4:
+                    TIM_OC4Init( TIM3, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM3, ENABLE );
+                    TIM_OC4PreloadConfig( TIM3, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM3, ENABLE );
+                    break;
+            }
             break;
         case PWM_TIM4:
-            TIM_Cmd( TIM4, ENABLE );
+            switch (object->channel)
+            {
+                case PWM_CH1:
+                    TIM_OC1Init( TIM4, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM4, ENABLE );
+                    TIM_OC1PreloadConfig( TIM4, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM4, ENABLE );
+                    break;
+                case PWM_CH2:
+                    TIM_OC2Init( TIM4, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM4, ENABLE );
+                    TIM_OC2PreloadConfig( TIM4, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM4, ENABLE );
+                    break;
+                case PWM_CH3:
+                    TIM_OC3Init( TIM4, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM4, ENABLE );
+                    TIM_OC3PreloadConfig( TIM4, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM4, ENABLE );
+                    break;
+                case PWM_CH4:
+                    TIM_OC4Init( TIM4, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM4, ENABLE );
+                    TIM_OC4PreloadConfig( TIM4, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM4, ENABLE );
+                    break;
+            }
             break;
     }
 }
@@ -318,19 +446,139 @@ void enable_pwm_output(PWM_handle *object)
 void disable_pwm_output(PWM_handle *object)
 {
     // ---------- Disable timer ----------
+    // ---------- Re-Initialize base structure with TIM_OutputState_Disable ----------
+    TIM_OCInitTypeDef TIM_OCInitStructure={0};
+
+    if (object->pwm_mode == PWM_MODE1)
+    {
+        TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    }
+    else
+    {
+        TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM2;
+    }
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Disable;       // Ensure PWM-Output is turned off
+	TIM_OCInitStructure.TIM_Pulse = object->duty_cycle;
+	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    // ---------- Configure Timer and Channel ----------
+    // This extensive selection matrix, should get optimized to few statements by compiler
     switch (object->timer)
     {
         case PWM_TIM1:
-            TIM_Cmd( TIM1, DISABLE );
+            switch (object->channel)
+            {
+                case PWM_CH1:
+                    TIM_OC1Init( TIM1, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM1, ENABLE );
+                    TIM_OC1PreloadConfig( TIM1, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM1, ENABLE );
+                    break;
+                case PWM_CH2:
+                    TIM_OC2Init( TIM1, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM1, ENABLE );
+                    TIM_OC2PreloadConfig( TIM1, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM1, ENABLE );
+                    break;
+                case PWM_CH3:
+                    TIM_OC3Init( TIM1, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM1, ENABLE );
+                    TIM_OC3PreloadConfig( TIM1, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM1, ENABLE );
+                    break;
+                case PWM_CH4:
+                    TIM_OC4Init( TIM1, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM1, ENABLE );
+                    TIM_OC4PreloadConfig( TIM1, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM1, ENABLE );
+                    break;
+            }
             break;
         case PWM_TIM2:
-            TIM_Cmd( TIM2, DISABLE );
+            switch (object->channel)
+            {
+                case PWM_CH1:
+                    TIM_OC1Init( TIM2, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM2, ENABLE );
+                    TIM_OC1PreloadConfig( TIM2, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM2, ENABLE );
+                    break;
+                case PWM_CH2:
+                    TIM_OC2Init( TIM2, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM2, ENABLE );
+                    TIM_OC2PreloadConfig( TIM2, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM2, ENABLE );
+                    break;
+                case PWM_CH3:
+                    TIM_OC3Init( TIM2, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM2, ENABLE );
+                    TIM_OC3PreloadConfig( TIM2, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM2, ENABLE );
+                    break;
+                case PWM_CH4:
+                    TIM_OC4Init( TIM2, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM2, ENABLE );
+                    TIM_OC4PreloadConfig( TIM2, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM2, ENABLE );
+                    break;
+            }
             break;
         case PWM_TIM3:
-            TIM_Cmd( TIM3, DISABLE );
+            switch (object->channel)
+            {
+                case PWM_CH1:
+                    TIM_OC1Init( TIM3, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM3, ENABLE );
+                    TIM_OC1PreloadConfig( TIM3, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM3, ENABLE );
+                    break;
+                case PWM_CH2:
+                    TIM_OC2Init( TIM3, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM3, ENABLE );
+                    TIM_OC2PreloadConfig( TIM3, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM3, ENABLE );
+                    break;
+                case PWM_CH3:
+                    TIM_OC3Init( TIM3, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM3, ENABLE );
+                    TIM_OC3PreloadConfig( TIM3, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM3, ENABLE );
+                    break;
+                case PWM_CH4:
+                    TIM_OC4Init( TIM3, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM3, ENABLE );
+                    TIM_OC4PreloadConfig( TIM3, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM3, ENABLE );
+                    break;
+            }
             break;
         case PWM_TIM4:
-            TIM_Cmd( TIM4, DISABLE );
+            switch (object->channel)
+            {
+                case PWM_CH1:
+                    TIM_OC1Init( TIM4, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM4, ENABLE );
+                    TIM_OC1PreloadConfig( TIM4, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM4, ENABLE );
+                    break;
+                case PWM_CH2:
+                    TIM_OC2Init( TIM4, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM4, ENABLE );
+                    TIM_OC2PreloadConfig( TIM4, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM4, ENABLE );
+                    break;
+                case PWM_CH3:
+                    TIM_OC3Init( TIM4, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM4, ENABLE );
+                    TIM_OC3PreloadConfig( TIM4, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM4, ENABLE );
+                    break;
+                case PWM_CH4:
+                    TIM_OC4Init( TIM4, &TIM_OCInitStructure );
+                    TIM_CtrlPWMOutputs( TIM4, ENABLE );
+                    TIM_OC4PreloadConfig( TIM4, TIM_OCPreload_Disable );
+                    TIM_ARRPreloadConfig( TIM4, ENABLE );
+                    break;
+            }
             break;
     }
 }
