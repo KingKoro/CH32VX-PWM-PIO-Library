@@ -78,10 +78,12 @@ int init_pwm_base(PWM_handle *object, uint8_t iTimer, uint8_t iChannel, int iPin
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
             GPIO_Init(GPIOC, &GPIO_InitStructure);
             break;
+        #if !defined(CH32X035) && !defined(CH32X033)
         case 0xd0:
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
             GPIO_Init(GPIOD, &GPIO_InitStructure);
             break;
+        #endif
     }
     // ---------- Initialize Timer ----------
     TIM_TimeBaseInitStructure.TIM_Period = object->period;
@@ -108,12 +110,14 @@ int init_pwm_base(PWM_handle *object, uint8_t iTimer, uint8_t iChannel, int iPin
             TIM_SelectOutputTrigger(TIM3, TIM_TRGOSource_Update);       // Enable self-resetting TRGO-Event when no PWM configured
             TIM_Cmd(TIM3, ENABLE);
             break;
+        #if !defined(CH32X035) && !defined(CH32X033)
         case PWM_TIM4:
             RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4 , ENABLE);
             TIM_TimeBaseInit( TIM4, &TIM_TimeBaseInitStructure);
             TIM_SelectOutputTrigger(TIM4, TIM_TRGOSource_Update);       // Enable self-resetting TRGO-Event when no PWM configured
             TIM_Cmd(TIM4, ENABLE);
             break;
+        #endif
     }
     return 0;
 }
@@ -253,6 +257,7 @@ void set_pwm_dutycycle(PWM_handle *object, uint16_t duty)
                     break;
             }
             break;
+        #if !defined(CH32X035) && !defined(CH32X033)
         case PWM_TIM4:
             switch (object->channel)
             {
@@ -282,6 +287,7 @@ void set_pwm_dutycycle(PWM_handle *object, uint16_t duty)
                     break;
             }
             break;
+        #endif
     }
 }
 
@@ -402,6 +408,7 @@ void enable_pwm_output(PWM_handle *object)
                     break;
             }
             break;
+        #if !defined(CH32X035) && !defined(CH32X033)
         case PWM_TIM4:
             switch (object->channel)
             {
@@ -431,6 +438,7 @@ void enable_pwm_output(PWM_handle *object)
                     break;
             }
             break;
+        #endif
     }
 }
 
@@ -551,6 +559,7 @@ void disable_pwm_output(PWM_handle *object)
                     break;
             }
             break;
+        #if !defined(CH32X035) && !defined(CH32X033)
         case PWM_TIM4:
             switch (object->channel)
             {
@@ -580,5 +589,6 @@ void disable_pwm_output(PWM_handle *object)
                     break;
             }
             break;
+        #endif
     }
 }
