@@ -64,14 +64,14 @@ typedef struct
 } PWM_handle;
 
 // Initializer function for PWM_handle (also let iCount default to 254 and iPwm_mode to PWM_MODE2 if not specified)
-int init_pwm_base(PWM_handle *object, uint8_t iTimer, uint8_t iChannel, int iPin, uint32_t iF_base, uint16_t iCount, uint16_t iPwm_mode);
+int init_pwm_base(PWM_handle *object, uint8_t iTimer, uint8_t iChannel, uint16_t u16Pin, uint32_t iF_base, uint16_t iCount, uint16_t iPwm_mode);
 // input structure for variadic args
 typedef struct 
 {
     PWM_handle *object;
     uint8_t iTimer;
     uint8_t iChannel;
-    int iPin;
+    uint16_t u16Pin;
     uint32_t iF_base;
     uint16_t iCount;
     uint16_t iPwm_mode;
@@ -86,7 +86,7 @@ int var_init_pwm(init_pwm_args in);
  * @param   object      Pointer to PWM_handle struct to initialize
  * @param   iTimer      Timer to use for PWM (PWM_TIM1, PWM_TIM2, PWM_TIM3 or PWM_TIM4)
  * @param   iChannel    Channel of time to use for PWM (PWM_CH1, PWM_CH2, PWM_CH3 or PWM_CH4)
- * @param   iPin        Pin for outputting PWM signal (e.g 0xA8 for PA8 ...)
+ * @param   u16Pin      Pin for outputting PWM signal (e.g 0x0A08 for PA8 ...)
  * @param   iF_base     Base carrier frequency of PWM signal (e.g. 40000 = 40kHz)
  * @param   iCount      Base for scaling duty cycle (max = iCount + 1, min = 0) (e.g. 254 for 8-Bit resolution)
  * @param   iPwm_mode   PWM mode selection, changes precision of actual output (PWM_MODE1 or PWM_MODE2)

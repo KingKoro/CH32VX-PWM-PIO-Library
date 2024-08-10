@@ -37,7 +37,7 @@
  * @param   object      Pointer to PWM_handle struct to initialize
  * @param   iTimer      Timer to use for PWM (PWM_TIM1, PWM_TIM2, PWM_TIM3 or PWM_TIM4)
  * @param   iChannel    Channel of time to use for PWM (PWM_CH1, PWM_CH2, PWM_CH3 or PWM_CH4)
- * @param   iPin        Pin for outputting PWM signal (e.g 0xA8 for PA8 ...)
+ * @param   u16Pin      Pin for outputting PWM signal (e.g 0x0A08 for PA8 ...)
  * @param   iF_base     Base carrier frequency of PWM signal (e.g. 10000 = 10kHz) 
  *                      WARNIGN: Due to integer divison, the actual frequency only roughly follows the specified one.
  * @param   iCount      Base for scaling duty cycle (max = iCount + 1, min = 0) (e.g. 254 for 8-Bit resolution)
@@ -45,7 +45,7 @@
  *
  * @return  Normally returns 0 on exit, returns -1 if invalid pin specified
  */
-int init_pwm_base(PWM_handle *object, uint8_t iTimer, uint8_t iChannel, int iPin, uint32_t iF_base, uint16_t iCount, uint16_t iPwm_mode)
+int init_pwm_base(PWM_handle *object, uint8_t iTimer, uint8_t iChannel, uint16_t u16Pin, uint32_t iF_base, uint16_t iCount, uint16_t iPwm_mode)
 {   
     // --------- Set attributes ----------
     object->pwm_mode = iPwm_mode;
@@ -59,27 +59,27 @@ int init_pwm_base(PWM_handle *object, uint8_t iTimer, uint8_t iChannel, int iPin
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure={0};
 
     // ---------- Set Pin as output ---------
-    if (iPin < 0xa0 || iPin > 0xdf) return -1; // invalid pin number
+    if (u16Pin < 0x0a00 || u16Pin > 0x0dff) return -1; // invalid pin number
     // based on pinMode() https://gist.github.com/bitbank2/13686b8a153a0b3a06839f4fa00589cb
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 << (iPin & 0xf);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 << (u16Pin & 0xff);
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    switch (iPin & 0xf0) 
+    switch (u16Pin & 0x0f00)
     {
-        case 0xa0:
+        case 0x0a00:
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
             GPIO_Init(GPIOA, &GPIO_InitStructure);
             break;
-        case 0xb0:
+        case 0x0b00:
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
             GPIO_Init(GPIOB, &GPIO_InitStructure);
             break;
-        case 0xc0:
+        case 0x0c00:
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
             GPIO_Init(GPIOC, &GPIO_InitStructure);
             break;
         #if !defined(CH32X035) && !defined(CH32X033)
-        case 0xd0:
+        case 0x0d00:
             RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
             GPIO_Init(GPIOD, &GPIO_InitStructure);
             break;
@@ -126,7 +126,7 @@ int var_init_pwm(init_pwm_args in)
 {
     uint16_t iCount_out = in.iCount ? in.iCount : 254;
     uint16_t iPwm_mode_out = in.iPwm_mode ? in.iPwm_mode : PWM_MODE2;
-    return init_pwm_base(in.object, in.iTimer, in.iChannel, in.iPin, in.iF_base, iCount_out, iPwm_mode_out);
+    return init_pwm_base(in.object, in.iTimer, in.iChannel, in.u16Pin, in.iF_base, iCount_out, iPwm_mode_out);
 }
 
 /*********************************************************************

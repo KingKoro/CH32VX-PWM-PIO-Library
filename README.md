@@ -30,7 +30,7 @@ Now you can compile and upload the project.
 
 The available functions are:
 ```C++
-int init_pwm(PWM_handle *object, uint8_t iTimer, uint8_t iChannel, int iPin, uint32_t iF_base, uint16_t iCount = 254, uint16_t iPwm_mode = PWM_MODE2)    /* Initialize struct */
+int init_pwm(PWM_handle *object, uint8_t iTimer, uint8_t iChannel, uint16_t u16Pin, uint32_t iF_base, uint16_t iCount = 254, uint16_t iPwm_mode = PWM_MODE2)    /* Initialize struct */
 
 void set_pwm_dutycycle(PWM_handle *object, uint16_t duty)           /* Set duty cycle of struct */
 
@@ -55,20 +55,20 @@ int main(void)
 
     // Initialize PWM on PA8 (TIM1_CH1) with 10kHz Base frequency
     PWM_handle PWM_A8={0};
-    init_pwm(&PWM_A8, PWM_TIM1, PWM_CH1, 0xA8, 10000);
+    init_pwm(&PWM_A8, PWM_TIM1, PWM_CH1, 0x0A08, 10000);
     set_pwm_dutycycle(&PWM_A8, 191);              // set  PWM duty cycle to ~75% (191/255) initially, setting dutycycle automatically starts PWM output
     // Initialize PWM on PA6 (TIM3_CH1) with 20kHz Base frequency
     PWM_handle PWM_A6={0};
-    init_pwm(&PWM_A6, PWM_TIM3, PWM_CH1, 0xA6, 20000);
+    init_pwm(&PWM_A6, PWM_TIM3, PWM_CH1, 0x0A06, 20000);
     set_pwm_dutycycle(&PWM_A6, 128);              // set  PWM duty cycle to 50% (128/255) initially, setting dutycycle automatically starts PWM output
     // Initialize PWM on PA7 (TIM3_CH2) with 20kHz Base frequency
     PWM_handle PWM_A7={0};
-    init_pwm(&PWM_A7, PWM_TIM3, PWM_CH2, 0xA7, 20000);
+    init_pwm(&PWM_A7, PWM_TIM3, PWM_CH2, 0x0A07, 20000);
     set_pwm_dutycycle(&PWM_A7, 128);              // set  PWM duty cycle to 50% (128/255) initially, setting dutycycle automatically starts PWM output
     disable_pwm_output(&PWM_A7);                  // Disable output, demonstrate independant channels
     // Initialize PWM on PB8 (TIM4_CH3) with 40kHz Base frequency
     PWM_handle PWM_B8={0};
-    init_pwm(&PWM_B8, PWM_TIM4, PWM_CH3, 0xB8, 40000);
+    init_pwm(&PWM_B8, PWM_TIM4, PWM_CH3, 0x0B08, 40000);
     set_pwm_dutycycle(&PWM_B8, 51);              // set  PWM duty cycle to ~20% (51/255) initially, setting dutycycle automatically starts PWM output
 
 
